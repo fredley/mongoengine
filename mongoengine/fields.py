@@ -882,7 +882,10 @@ class DynamicField(BaseField):
         if isinstance(value, dict) and "_cls" in value:
             doc_cls = get_document(value["_cls"])
             if "_ref" in value:
-                value = doc_cls._get_db().dereference(value["_ref"])
+                value = doc_cls._get_db().dereference(
+                    value["_ref"],
+                    session=doc_cls.get_local_session()
+                )
             return doc_cls._from_son(value)
 
         return super().to_python(value)
@@ -1175,7 +1178,7 @@ class ReferenceField(BaseField):
 
     @staticmethod
     def _lazy_load_ref(ref_cls, dbref):
-        dereferenced_son = ref_cls._get_db().dereference(dbref)
+        dereferenced_son = ref_cls._get_db().dereference(dbref, session=ref_cls.get_local_session())
         if dereferenced_son is None:
             raise DoesNotExist(f"Trying to dereference unknown document {dbref}")
 
@@ -1323,7 +1326,9 @@ class CachedReferenceField(BaseField):
             collection = self.document_type._get_collection_name()
             value = DBRef(collection, self.document_type.id.to_python(value["_id"]))
             return self.document_type._from_son(
-                self.document_type._get_db().dereference(value)
+                self.document_type._get_db().dereference(
+                    value, session=self.document_type.get_local_session()
+                )
             )
 
         return value
@@ -1339,7 +1344,7 @@ class CachedReferenceField(BaseField):
 
     @staticmethod
     def _lazy_load_ref(ref_cls, dbref):
-        dereferenced_son = ref_cls._get_db().dereference(dbref)
+        dereferenced_son = ref_cls._get_db().dereference(dbref, session=ref_cls.get_local_session())
         if dereferenced_son is None:
             raise DoesNotExist(f"Trying to dereference unknown document {dbref}")
 
@@ -1483,7 +1488,7 @@ class GenericReferenceField(BaseField):
 
     @staticmethod
     def _lazy_load_ref(ref_cls, dbref):
-        dereferenced_son = ref_cls._get_db().dereference(dbref)
+        dereferenced_son = ref_cls._get_db().dereference(dbref, session=ref_cls.get_local_session())
         if dereferenced_son is None:
             raise DoesNotExist(f"Trying to dereference unknown document {dbref}")
 

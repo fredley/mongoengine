@@ -1,6 +1,7 @@
 import unittest
 from datetime import datetime
 
+from mongoengine.context_managers import run_in_transaction
 import pytest
 from pymongo.collation import Collation
 from pymongo.errors import OperationFailure
@@ -37,6 +38,13 @@ class TestIndexes(unittest.TestCase):
         Documents
         """
         self._index_test(Document)
+
+    def test_indexes_document_run_in_transaction(self):
+        """Ensure that indexes are used when meta[indexes] is specified for
+        Documents
+        """
+        with run_in_transaction():
+            self._index_test(Document)
 
     def test_indexes_dynamic_document(self):
         """Ensure that indexes are used when meta[indexes] is specified for

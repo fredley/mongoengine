@@ -2,6 +2,7 @@
 Helper functions, constants, and types to aid with PyMongo support.
 """
 
+from mongoengine.sessions import get_local_session
 import pymongo
 from bson import binary, json_util
 from pymongo.errors import OperationFailure
@@ -43,7 +44,7 @@ def count_documents(
                 # is a lot faster as it uses the collection metadata
                 return collection.estimated_document_count(**kwargs)
             else:
-                return collection.count_documents(filter=filter, **kwargs)
+                return collection.count_documents(filter=filter, session=get_local_session(), **kwargs)
         except OperationFailure as err:
             if PYMONGO_VERSION >= (4,):
                 raise
@@ -59,7 +60,7 @@ def count_documents(
             ):
                 raise
 
-    cursor = collection.find(filter)
+    cursor = collection.find(filter, session=get_local_session())
     for option, option_value in kwargs.items():
         cursor_method = getattr(cursor, option)
         cursor = cursor_method(option_value)
