@@ -1107,7 +1107,7 @@ class TestDocumentInstance(MongoDBTestCase):
         assert doc.to_json() == doc_copy.to_json()
         assert doc._get_changed_fields() == []
 
-        self.assertDbEqual([dict(other_doc.to_mongo()), dict(doc.to_mongo())])
+        self._assert_db_equal([dict(other_doc.to_mongo()), dict(doc.to_mongo())])
 
         with pytest.raises(Exception, match="test"):
             with run_in_transaction():
@@ -1119,7 +1119,7 @@ class TestDocumentInstance(MongoDBTestCase):
             doc.to_json() != doc_copy.to_json()
         )  # Data in the DB is not commited but the doc keeps the changes
 
-        self.assertDbEqual([dict(other_doc.to_mongo()), dict(doc_copy.to_mongo())])
+        self._assert_db_equal([dict(other_doc.to_mongo()), dict(doc_copy.to_mongo())])
 
     def test_modify_with_positional_push(self):
         class Content(EmbeddedDocument):

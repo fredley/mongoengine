@@ -19,6 +19,7 @@ from mongoengine.context_managers import (
     switch_db,
 )
 from mongoengine.pymongo_support import count_documents
+from mongoengine.sessions import get_local_session
 from tests.utils import MongoDBTestCase
 
 
