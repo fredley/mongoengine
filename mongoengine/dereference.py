@@ -188,8 +188,7 @@ class DeReference:
 
                 if doc_type:
                     references = doc_type._get_db()[collection].find(
-                        {"_id": {"$in": refs}},
-                        session=doc_type.get_local_session()
+                        {"_id": {"$in": refs}}, session=doc_type.get_local_session()
                     )
                     for ref in references:
                         doc = doc_type._from_son(ref)

@@ -2,10 +2,11 @@
 Helper functions, constants, and types to aid with PyMongo support.
 """
 
-from mongoengine.sessions import get_local_session
 import pymongo
 from bson import binary, json_util
 from pymongo.errors import OperationFailure
+
+from mongoengine.sessions import get_local_session
 
 PYMONGO_VERSION = tuple(pymongo.version_tuple[:2])
 
@@ -44,7 +45,9 @@ def count_documents(
                 # is a lot faster as it uses the collection metadata
                 return collection.estimated_document_count(**kwargs)
             else:
-                return collection.count_documents(filter=filter, session=get_local_session(), **kwargs)
+                return collection.count_documents(
+                    filter=filter, session=get_local_session(), **kwargs
+                )
         except OperationFailure as err:
             if PYMONGO_VERSION >= (4,):
                 raise

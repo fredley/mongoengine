@@ -101,7 +101,6 @@ class TestContextManagers(MongoDBTestCase):
         assert 1 == Group.objects.count()
 
         with run_in_transaction():
-
             Group(name="hello - inside").save()
             assert 2 == Group.objects.count()
 
@@ -112,7 +111,6 @@ class TestContextManagers(MongoDBTestCase):
 
         try:
             with run_in_transaction():
-
                 Group(name="hello - inside").save()
                 assert 1 == Group.objects.count()
 

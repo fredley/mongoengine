@@ -2,13 +2,20 @@ import contextlib
 import threading
 from contextlib import contextmanager
 
-from mongoengine.sessions import clear_local_session, set_local_session
 from pymongo.read_concern import ReadConcern
 from pymongo.write_concern import WriteConcern
 
 from mongoengine.common import _import_class
-from mongoengine.connection import DEFAULT_CONNECTION_NAME, get_connection, get_db
+from mongoengine.connection import (
+    DEFAULT_CONNECTION_NAME,
+    get_connection,
+    get_db,
+)
 from mongoengine.pymongo_support import count_documents
+from mongoengine.sessions import (
+    clear_local_session,
+    set_local_session,
+)
 
 __all__ = (
     "run_in_transaction",
@@ -320,7 +327,6 @@ def set_read_write_concern(collection, write_concerns, read_concerns):
         write_concern=WriteConcern(**combined_write_concerns),
         read_concern=ReadConcern(**combined_read_concerns),
     )
-
 
 
 class run_in_transaction(contextlib.ContextDecorator, contextlib.ExitStack):

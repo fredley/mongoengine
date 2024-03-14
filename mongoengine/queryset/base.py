@@ -4,7 +4,6 @@ import re
 import warnings
 from collections.abc import Mapping
 
-from mongoengine.sessions import get_local_session
 import pymongo
 import pymongo.errors
 from bson import SON, json_util
@@ -37,6 +36,7 @@ from mongoengine.pymongo_support import (
 from mongoengine.queryset import transform
 from mongoengine.queryset.field_list import QueryFieldList
 from mongoengine.queryset.visitor import Q, QNode
+from mongoengine.sessions import get_local_session
 
 __all__ = ("BaseQuerySet", "DO_NOTHING", "NULLIFY", "CASCADE", "DENY", "PULL")
 
@@ -521,7 +521,9 @@ class BaseQuerySet:
                 )
 
         with set_write_concern(queryset._collection, write_concern) as collection:
-            result = collection.delete_many(queryset._query, session=self._get_local_session())
+            result = collection.delete_many(
+                queryset._query, session=self._get_local_session()
+            )
 
             # If we're using an unack'd write concern, we don't really know how
             # many items have been deleted at this point, hence we only return
@@ -591,8 +593,11 @@ class BaseQuerySet:
                 if multi:
                     update_func = collection.update_many
                 result = update_func(
-                    query, update, upsert=upsert,
-                    array_filters=array_filters, session=self._get_local_session(),
+                    query,
+                    update,
+                    upsert=upsert,
+                    array_filters=array_filters,
+                    session=self._get_local_session(),
                 )
             if full_result:
                 return result
@@ -706,7 +711,10 @@ class BaseQuerySet:
                 warnings.warn(msg, DeprecationWarning)
             if remove:
                 result = queryset._collection.find_one_and_delete(
-                    query, sort=sort, session=self._get_local_session(), **self._cursor_args
+                    query,
+                    sort=sort,
+                    session=self._get_local_session(),
+                    **self._cursor_args,
                 )
             else:
                 if new:
@@ -759,7 +767,9 @@ class BaseQuerySet:
         doc_map = {}
 
         docs = self._collection.find(
-            {"_id": {"$in": object_ids}}, session=self._get_local_session(), **self._cursor_args
+            {"_id": {"$in": object_ids}},
+            session=self._get_local_session(),
+            **self._cursor_args,
         )
         if self._scalar:
             for doc in docs:
@@ -1369,7 +1379,9 @@ class BaseQuerySet:
                 read_preference=self._read_preference, read_concern=self._read_concern
             )
 
-        return collection.aggregate(final_pipeline, cursor={}, session=self._get_local_session(), **kwargs)
+        return collection.aggregate(
+            final_pipeline, cursor={}, session=self._get_local_session(), **kwargs
+        )
 
     # JS functionality
     def map_reduce(
@@ -1569,8 +1581,11 @@ class BaseQuerySet:
         if isinstance(field_instances[-1], ListField):
             pipeline.insert(1, {"$unwind": "$" + field})
 
-        result = tuple(self._document._get_collection().aggregate(
-            pipeline, session=self._get_local_session()))
+        result = tuple(
+            self._document._get_collection().aggregate(
+                pipeline, session=self._get_local_session()
+            )
+        )
 
         if result:
             return result[0]["total"]
@@ -1597,8 +1612,11 @@ class BaseQuerySet:
         if isinstance(field_instances[-1], ListField):
             pipeline.insert(1, {"$unwind": "$" + field})
 
-        result = tuple(self._document._get_collection().aggregate(
-            pipeline, session=self._get_local_session()))
+        result = tuple(
+            self._document._get_collection().aggregate(
+                pipeline, session=self._get_local_session()
+            )
+        )
         if result:
             return result[0]["total"]
         return 0

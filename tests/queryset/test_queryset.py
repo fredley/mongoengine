@@ -11,7 +11,11 @@ from pymongo.results import UpdateResult
 
 from mongoengine import *
 from mongoengine.connection import get_db
-from mongoengine.context_managers import query_counter, run_in_transaction, switch_db
+from mongoengine.context_managers import (
+    query_counter,
+    run_in_transaction,
+    switch_db,
+)
 from mongoengine.errors import InvalidQueryError
 from mongoengine.mongodb_support import (
     MONGODB_36,

@@ -15,7 +15,11 @@ from mongoengine import *
 from mongoengine import signals
 from mongoengine.base import _document_registry, get_document
 from mongoengine.connection import get_db
-from mongoengine.context_managers import query_counter, run_in_transaction, switch_db
+from mongoengine.context_managers import (
+    query_counter,
+    run_in_transaction,
+    switch_db,
+)
 from mongoengine.errors import (
     FieldDoesNotExist,
     InvalidDocumentError,

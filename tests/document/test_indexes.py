@@ -1,13 +1,13 @@
 import unittest
 from datetime import datetime
 
-from mongoengine.context_managers import run_in_transaction
 import pytest
 from pymongo.collation import Collation
 from pymongo.errors import OperationFailure
 
 from mongoengine import *
 from mongoengine.connection import get_db
+from mongoengine.context_managers import run_in_transaction
 from mongoengine.mongodb_support import (
     MONGODB_42,
     get_mongodb_version,

@@ -1,9 +1,9 @@
 import unittest
 
-from mongoengine.context_managers import run_in_transaction
 import pytest
 
 from mongoengine import *
+from mongoengine.context_managers import run_in_transaction
 from tests.utils import MongoDBTestCase
 
 __all__ = ("TestDynamicDocument",)
