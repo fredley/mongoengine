@@ -3,8 +3,6 @@ from typing import Optional
 
 from pymongo.client_session import ClientSession
 
-from mongoengine.connection import DEFAULT_CONNECTION_NAME
-
 _sessions = threading.local()
 
 
@@ -13,15 +11,21 @@ def set_local_session(db_alias: str, session: ClientSession):
 
 
 def get_local_session(
-    db_alias: str = DEFAULT_CONNECTION_NAME,
+    db_alias: Optional[str] = None
 ) -> Optional[ClientSession]:
+    if db_alias is None:
+        from mongoengine.connection import DEFAULT_CONNECTION_NAME
+        db_alias = DEFAULT_CONNECTION_NAME
     try:
         return _sessions.__getattribute__(key_local_session(db_alias))
     except AttributeError:
         return None
 
 
-def clear_local_session(db_alias: str = DEFAULT_CONNECTION_NAME):
+def clear_local_session(db_alias: Optional[str] = None):
+    if db_alias is None:
+        from mongoengine.connection import DEFAULT_CONNECTION_NAME
+        db_alias = DEFAULT_CONNECTION_NAME
     _sessions.__delattr__(key_local_session(db_alias))
 
 
