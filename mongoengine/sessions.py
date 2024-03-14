@@ -10,11 +10,10 @@ def set_local_session(db_alias: str, session: ClientSession):
     _sessions.__setattr__(key_local_session(db_alias), session)
 
 
-def get_local_session(
-    db_alias: Optional[str] = None
-) -> Optional[ClientSession]:
+def get_local_session(db_alias: Optional[str] = None) -> Optional[ClientSession]:
     if db_alias is None:
         from mongoengine.connection import DEFAULT_CONNECTION_NAME
+
         db_alias = DEFAULT_CONNECTION_NAME
     try:
         return _sessions.__getattribute__(key_local_session(db_alias))
@@ -25,6 +24,7 @@ def get_local_session(
 def clear_local_session(db_alias: Optional[str] = None):
     if db_alias is None:
         from mongoengine.connection import DEFAULT_CONNECTION_NAME
+
         db_alias = DEFAULT_CONNECTION_NAME
     _sessions.__delattr__(key_local_session(db_alias))
 
